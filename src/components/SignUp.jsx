@@ -8,18 +8,37 @@ const SignUp = () => {
     const handleSignUp = e => {
         e.preventDefault();
 
+        const name = e.target.name.value;
         const email = e.target.email.value;
         const password = e.target.password.value;
-        console.log('form signup', email, password);
-
+        console.log('form signup', name, email, password);
+        
         // Create user
         createUser(email, password)
         .then(result => {
-            console.log(result.user);
-        })
-        .catch(error => {
-            console.log('error', error);
-        });
+            console.log('User created at fb', result.user);
+            const createdAt = result?.user?.metadata?.creationTime;
+            console.log(createdAt);
+            const newUser = {name, email, createdAt};
+
+                fetch('http://localhost:5000/users', {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(newUser)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                       
+                        if(data.insertedId) {
+                            console.log('User has been inserted to db');
+                        }
+                    })
+            })
+            .catch(error => {
+                console.log('error', error);
+            });
     }
 
     return (
@@ -36,6 +55,8 @@ const SignUp = () => {
                     <div className="card-body">
                         <form onSubmit={handleSignUp}>
                             <fieldset className="fieldset">
+                                <label className="label">Name</label>
+                                <input type="text" name='name' className="input" placeholder="Name" />
                                 <label className="label">Email</label>
                                 <input type="email" name='email' className="input" placeholder="Email" />
                                 <label className="label">Password</label>
