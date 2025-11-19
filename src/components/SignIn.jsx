@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../providers/AuthProvider';
+import { data } from 'autoprefixer';
+import { Link } from 'react-router-dom';
 
 const SignIn = () => {
 
-    const {signInUser} = useContext(AuthContext);
+    const { signInUser } = useContext(AuthContext);
 
     const handleSignIn = e => {
         e.preventDefault();
@@ -13,12 +15,30 @@ const SignIn = () => {
 
         console.log(email, password);
         signInUser(email, password)
-        .then(result => {
-            console.log(result.user);
-        })
-        .catch(error => {
-            console.log(error)
-        })
+            .then(result => {
+                console.log(result.user);
+
+                // update last sign in time
+                const lastLoginTime = result?.user?.metadata?.lastSignInTime;
+                console.log('Last login time', lastLoginTime);
+
+                const lastLoginInfo = { email, lastLoginTime };
+
+                fetch('http://localhost:5000/users', {
+                    method: 'PATCH',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(lastLoginInfo)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log('Last Sign in time updated in db', data)
+                    })
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     return (
@@ -41,6 +61,7 @@ const SignIn = () => {
                                 <input type="password" name='password' className="input" placeholder="Password" />
                                 <div><a className="link link-hover">Forgot password?</a></div>
                                 <button className="btn btn-neutral mt-4">Sign In</button>
+                                <p>New coffee drinker? Please <Link to="/signUp">Sign Up</Link>.</p>
                             </fieldset>
                         </form>
                     </div>
