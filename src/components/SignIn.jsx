@@ -24,7 +24,7 @@ const SignIn = () => {
 
                 const lastLoginInfo = { email, lastLoginTime };
 
-                fetch('http://localhost:5000/users', {
+                fetch('https://first-coffee-server.vercel.app/users', {
                     method: 'PATCH',
                     headers: {
                         'content-type': 'application/json'
@@ -61,7 +61,7 @@ const SignIn = () => {
                                 <input type="password" name='password' className="input" placeholder="Password" />
                                 <div><a className="link link-hover">Forgot password?</a></div>
                                 <button className="btn btn-neutral mt-4">Sign In</button>
-                                <p>New coffee drinker? Please <Link to="/signUp">Sign Up</Link>.</p>
+                                <p>New coffee drinker? Please <Link to="/signUp">Sign Up or Register</Link>.</p>
                             </fieldset>
                         </form>
                     </div>
